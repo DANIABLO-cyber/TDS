@@ -8,12 +8,27 @@ Created on Tue Feb 18 21:40:28 2025
 import scipy.io.wavfile as wf
 import numpy as np
 
-# Obtener ahora la estima **sin sesgo** de la autocorrelación usando el comando `correlate` (MatLab: `xcorr`) de numpy. Comparar gráficamente esta estima con la obtenida mediante el estimador sesgado de los apartados anteriores.
 
-# Cargar la señal de audio
-fs, x = wf.read("handel.wav")
-x = x - np.mean(x)  # Eliminar el nivel
+def x(n):
+    if n == 0:
+        return 1
+    elif n > 0:
+        return 1.9 * (0.9 ** (n - 1))
+    else:
+        return 0
 
-# Estimar la autocorrelación
-R = np.correlate(x, x, mode="full") / len(x)
-n = np.arange(-len(x) + 1, len(x))
+
+# Calcular r_x(1) = sum_{n=1}^{\infty} x(n) * x(n - 1)
+# Se trunca la suma cuando los términos sean suficientemente pequeños
+rx1 = 0
+tolerance = 1e-10
+n = 1
+
+while True:
+    term = x(n) * x(n - 1)
+    if abs(term) < tolerance:
+        break
+    rx1 += term
+    n += 1
+
+print(f"r_x(1) ≈ {rx1}")
