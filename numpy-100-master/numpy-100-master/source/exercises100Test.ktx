@@ -1,0 +1,269 @@
+< q1
+Crea un array unidimensional `a` con los valores `[1, 2, 3]` y tipo int32. Imprímelo en pantalla. (★☆☆) <br><br> 
+
+< h1
+pista: a = np.array(..., dtype=...)
+
+< a1
+import numpy as np
+a = np.array([1, 2, 3], dtype='int32')
+print(a)
+
+
+< q2
+Muestra las dimensiones (ndim) de un array creado con los valores `[[9.0, 8.0, 7.0],[6.0, 5.0, 4.0]]`. (★☆☆) <br><br> 
+
+< h2
+pista: b.ndim
+
+< a2
+import numpy as np
+b = np.array([[9.0,8.0,7.0],
+              [6.0,5.0,4.0]])
+print(b.ndim)
+
+< q3
+Muestra las proporciones de un array `b` creado con los valores `[[9.0, 8.0, 7.0],[6.0, 5.0, 4.0]]`. (★☆☆) <br><br> 
+
+< h3
+pista: b.shape
+
+< a3
+import numpy as np
+b = np.array([[9.0,8.0,7.0],
+              [6.0,5.0,4.0]])
+print(b.shape)
+
+
+< q4
+Crea un array de forma `(2, 3)` con valores aleatorios entre `-4` y `8` (sin incluir 8) e 
+imprime su tamaño total en bytes (nbytes). (★★☆) <br><br> 
+
+< h4
+pista: np.random.randint(...), array.nbytes
+
+< a4
+import numpy as np
+c = np.random.randint(-4, 8, size=(2,3))
+print(c)
+print(c.nbytes)
+
+
+< q5
+Crea un array unidimensional `x` con `[10, 20, 30, 40, 50]`. Imprime su forma `(shape)` y su número de elementos `(size)`. (★☆☆)
+
+< h5
+pista: x.shape, x.size
+
+< a5
+import numpy as np
+x = np.array([10, 20, 30, 40, 50])
+print(x.shape)
+print(x.size)
+
+
+< q5
+Crea un array bidimensional `m` con los valores [[1,2,3,4,5,6,7],[8,9,10,11,12,13,14]]. Muestra el elemento de la fila 2, columna 5. (★☆☆)
+
+< h5
+pista: m[1, 4]
+
+< a5
+import numpy as np
+m = np.array([[1,2,3,4,5,6,7],
+              [8,9,10,11,12,13,14]])
+print(m[1, 4])  # 12
+
+
+< q6
+Del mismo array `m`, obtiene toda la primera fila. (★☆☆)
+
+< h6
+pista: m[0, :]
+
+< a6
+import numpy as np
+m = np.array([[1,2,3,4,5,6,7],
+              [8,9,10,11,12,13,14]])
+print(m[0, :])
+
+
+< q7
+Crea un array unidimensional con valores del 1 al 10 y obtén los elementos desde el índice 2 hasta el 7, avanzando de 2 en 2. (★★☆)
+
+< h7
+pista: a[2:8:2]
+
+< a7
+import numpy as np
+a = np.array([1,2,3,4,5,6,7,8,9,10])
+print(a[2:8:2])
+
+
+< q8
+Crea un array tridimensional `b` con forma (2,2,2), por ejemplo [[[1,2],[3,4]], [[5,6],[7,8]]], e imprime el valor de b[0,1,1]. (★☆☆)
+
+< h8
+pista: b[0,1,1]
+
+< a8
+import numpy as np
+b = np.array([[[1,2],[3,4]],
+              [[5,6],[7,8]]])
+print(b[0,1,1])  # 4
+
+
+< q9
+Utiliza `np.zeros` para crear una matriz de ceros de forma (3,4). Asigna todos los valores de la última fila a 9 e imprímela. (★★☆)
+
+< h9
+pista: arr[-1, :] = 9
+
+< a9
+import numpy as np
+arr = np.zeros((3,4))
+arr[-1, :] = 9
+print(arr)
+
+
+< q10
+Crea una matriz de 1s con forma (2,2,2) y tipo int32 usando `np.ones`. (★☆☆)
+
+< h10
+pista: np.ones((dimensiones), dtype=...)
+
+< a10
+import numpy as np
+mat_ones = np.ones((2,2,2), dtype='int32')
+print(mat_ones)
+
+
+< q11
+Genera una matriz de 4x4 rellena con el número 99. (★☆☆)
+
+< h11
+pista: np.full((4,4), 99)
+
+< a11
+import numpy as np
+mat_99 = np.full((4,4), 99)
+print(mat_99)
+
+
+< q12
+Crea un array `base` con [1,2,3] y luego repítelo 3 veces en el eje 0 (filas). (★★☆)
+
+< h12
+pista: np.repeat(..., axis=...)
+
+< a12
+import numpy as np
+base = np.array([[1,2,3]])
+rep = np.repeat(base, 3, axis=0)
+print(rep)
+
+
+< q13
+Crea un array de forma (5,5) lleno de 1s llamado `board`. Crea otro array (3,3) de ceros con un 9 en el centro. Inserta ese array en el centro de `board`. (★★★)
+
+< h13
+pista: board[1:-1,1:-1] = sub
+
+< a13
+import numpy as np
+board = np.ones((5,5))
+sub = np.zeros((3,3))
+sub[1,1] = 9
+board[1:-1,1:-1] = sub
+print(board)
+
+
+< q14
+Crea una matriz identidad de 5x5 e imprímela. (★☆☆)
+
+< h14
+pista: np.identity(5)
+
+< a14
+import numpy as np
+eye = np.identity(5)
+print(eye)
+
+
+< q15
+Crea un array `arr` con [1,2,3]. Define `copia = arr.copy()` y cambia el primer valor de `copia` a 100. Imprime ambos arrays para comprobar que `arr` sigue intacto. (★☆☆)
+
+< h15
+pista: arr.copy()
+
+< a15
+import numpy as np
+arr = np.array([1,2,3])
+copia = arr.copy()
+copia[0] = 100
+print("arr:", arr)
+print("copia:", copia)
+
+
+< q16
+Genera 6 valores decimales aleatorios con `np.random.rand` y colócalos en una matriz 2x3. (★☆☆)
+
+< h16
+pista: np.random.rand()
+
+< a16
+import numpy as np
+random_mat = np.random.rand(2, 3)
+print(random_mat)
+
+
+< q17
+Genera un array de enteros aleatorios con forma (3,3) y valores entre 10 y 20 (sin incluir 20). Imprime el array resultante. (★☆☆)
+
+< h17
+pista: np.random.randint(...)
+
+< a17
+import numpy as np
+rand_ints = np.random.randint(10, 20, size=(3,3))
+print(rand_ints)
+
+
+< q18
+Crea un array `nums` con valores [5, 10, 15, 20, 25]. Reemplaza todos los valores mayores a 15 por 99 e imprime el array resultante. (★★☆)
+
+< h18
+pista: nums[nums > 15] = 99
+
+< a18
+import numpy as np
+nums = np.array([5, 10, 15, 20, 25])
+nums[nums > 15] = 99
+print(nums)
+
+
+< q19
+Usando `np.arange`, crea un array de 12 elementos desde 0 a 11. Transfórmalo a forma (3,4) y elimina la tercera columna. Imprime el resultado. (★★☆)
+
+< h19
+pista: np.delete(arr, indice_columna, axis=1)
+
+< a19
+import numpy as np
+mat = np.arange(12).reshape(3,4)
+mat = np.delete(mat, 2, axis=1)
+print(mat)
+
+
+< q20
+Crea un array de 10 elementos y ordénalo en orden descendente usando la función `np.sort`. Imprime el array original y el ordenado para ver la diferencia. (★★★)
+
+< h20
+pista: sorted_arr = np.sort(...)[::-1]
+
+< a20
+import numpy as np
+original = np.array([5, 2, 9, 1, 10, 8, 3, 7, 6, 4])
+sorted_desc = np.sort(original)[::-1]
+print("Original:", original)
+print("Ordenado Desc:", sorted_desc)
