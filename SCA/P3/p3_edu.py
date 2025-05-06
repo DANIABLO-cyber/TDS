@@ -35,7 +35,9 @@ def decoderPCM(code, dataRange, b):
       - data: array 1D de valores reconstruidos.
     """
     # 1) Descodificar bits → ids
-    coder = FixedLengthCoder(b)
+    coder = FixedLengthCoder(
+        b
+    )  # Cada grupo de b bits lo convierte en un número entero (un id)
     ids = coder.decode(code)  # 1D array de enteros
 
     # 2) Mapeo del descodificador: ids → valores aproximados
@@ -54,7 +56,7 @@ def calculate_snr(orig, recon):
 
 def main():
     # --- Parámetros ---
-    img_path = "lena.png"  # Coloca lena.png en este directorio
+    img_path = "Data/lena.png"  # Coloca lena.png en este directorio
     bit_rates = [2, 3, 4, 6, 8]  # Tasas de bits a probar
 
     # 1) Leer imagen
@@ -105,8 +107,8 @@ def main():
 if __name__ == "__main__":
     main()
 
-#%%
-#%%
+# %%
+# %%
 
 
 def dct(N):
@@ -190,6 +192,7 @@ if __name__ == "__main__":
     # Verificar reconstrucción
     print("Error máximo reconstrucción:", np.max(np.abs(block - rec)))
 
+
 # %%
 def encoderDCT(data, dataRange, N, Nsel, b):
     """
@@ -206,7 +209,7 @@ def encoderDCT(data, dataRange, N, Nsel, b):
     # Pad para que ambos divisibles por N
     pad_h = (N - h % N) % N
     pad_w = (N - w % N) % N
-    padded = np.pad(data, ((0, pad_h), (0, pad_w)), mode='constant')
+    padded = np.pad(data, ((0, pad_h), (0, pad_w)), mode="constant")
 
     C = dct(N)
     coeffs = []
@@ -214,7 +217,7 @@ def encoderDCT(data, dataRange, N, Nsel, b):
     # Extraer coeficientes zonales de cada bloque
     for i in range(0, padded.shape[0], N):
         for j in range(0, padded.shape[1], N):
-            block = padded[i:i+N, j:j+N]
+            block = padded[i : i + N, j : j + N]
             theta = dDCT(block, C)
             coeffs.append(theta[:Nsel, :Nsel].ravel())
 
@@ -226,6 +229,7 @@ def encoderDCT(data, dataRange, N, Nsel, b):
     coder = FixedLengthCoder(b)
     code = coder.encode(ids)
     return code
+
 
 def decoderDCT(code, dataRange, N, Nsel, imageShape, b):
     """
@@ -259,43 +263,58 @@ def decoderDCT(code, dataRange, N, Nsel, imageShape, b):
             theta = np.zeros((N, N))
             theta[:Nsel, :Nsel] = coeffs[idx]
             block = iDCT(theta, C)
-            recon[i:i+N, j:j+N] = block
+            recon[i : i + N, j : j + N] = block
             idx += 1
 
     # Recortar al tamaño original
-    return recon[:imageShape[0], :imageShape[1]]
+    return recon[: imageShape[0], : imageShape[1]]
+
+
 # %%
+
+
+# Se asume que encoderDCT, decoderDCT, encoderPCM, decoderPCM y calculate_snr están definidos o importados
+
+
 def main():
     # --- 1) Carga y preprocesado ---
     im = img_as_float(io.imread("lena.png", as_gray=True))
     # original en [0,1]; lo centramos en 0 → [-0.5, +0.5]
     im0 = im - 0.5
-    dataRange = signalRange(im0)  # (mín, máx) para UniformSQ
+    # valor máximo global de im0
+    max_val_global = np.max(np.abs(im0))
     shape = im0.shape
 
     # --- 2) Parámetros a probar ---
     bloque_sizes = [8, 16]
-    bit_rates    = [2, 4, 8]
+    bit_rates = [2, 4, 8]
 
     # --- 3) Preparar figura ---
-    fig, axes = plt.subplots(len(bloque_sizes), len(bit_rates), figsize=(3*len(bit_rates), 3*len(bloque_sizes)))
+    fig, axes = plt.subplots(
+        len(bloque_sizes),
+        len(bit_rates),
+        figsize=(3 * len(bit_rates), 3 * len(bloque_sizes)),
+    )
     plt.gray()
 
     # --- 4) Recorremos combinaciones ---
     for i, N in enumerate(bloque_sizes):
+        # Ajustar el rango dinámico del cuantificador según N
+        data_range = (-N * max_val_global, N * max_val_global)
+
         for j, b in enumerate(bit_rates):
             Nsel = N // 2
 
             # 4.1) DCT + zonal
-            code_dct = encoderDCT(im0, dataRange, N, Nsel, b)
-            rec_dct  = decoderDCT(code_dct, dataRange, N, Nsel, shape, b) + 0.5
-            snr_dct  = calculate_snr(im, rec_dct)
+            code_dct = encoderDCT(im0, data_range, N, Nsel, b)
+            rec_dct = decoderDCT(code_dct, data_range, N, Nsel, shape, b) + 0.5
+            snr_dct = calculate_snr(im, rec_dct)
             size_dct = len(code_dct) / 8 / 1024
 
             # 4.2) PCM uniforme
-            code_pcm = encoderPCM(im0, dataRange, b)
-            rec_pcm  = decoderPCM(code_pcm, dataRange, b).reshape(shape) + 0.5
-            snr_pcm  = calculate_snr(im, rec_pcm)
+            code_pcm = encoderPCM(im0, data_range, b)
+            rec_pcm = decoderPCM(code_pcm, data_range, b).reshape(shape) + 0.5
+            snr_pcm = calculate_snr(im, rec_pcm)
             size_pcm = len(code_pcm) / 8 / 1024
 
             # 4.3) Mostrar reconstrucción DCT
@@ -311,7 +330,7 @@ def main():
     plt.tight_layout()
     plt.show()
 
+
 if __name__ == "__main__":
     main()
-#%%
-
+# %%
